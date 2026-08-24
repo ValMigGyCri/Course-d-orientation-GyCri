@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Balise — Course d'orientation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF7F0; --ink:#1E2420; --forest:#1D5C42; --forest-d:#123D2C;
+  --flag:#E8590C; --flag-l:#FDEEE3; --line:#D8D2C4; --ok:#1D7A46; --err:#B3261E;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-weight:500;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:repeating-radial-gradient(circle at 85% -10%, transparent 0 58px, var(--line) 58px 59px);}
+#app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:20px 16px 60px}
+h1{font-weight:900;font-size:26px;letter-spacing:-.5px}
+h2{font-weight:700;font-size:19px;margin-bottom:12px}
+h3{font-weight:700;font-size:15px}
+p{line-height:1.5}
+.muted{color:#6B6A60;font-size:13px}
+.mono{font-family:var(--mono)}
+.flagmark{display:inline-block;width:22px;height:22px;border-radius:4px;vertical-align:-4px;
+  background:linear-gradient(135deg,#fff 0 50%,var(--flag) 50% 100%);border:1.5px solid var(--ink)}
+.card{background:#fff;border:1.5px solid var(--ink);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:3px 3px 0 var(--line)}
+button{font-family:inherit;font-weight:700;font-size:15px;border-radius:10px;border:1.5px solid var(--ink);
+  background:#fff;color:var(--ink);padding:12px 16px;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+button:active{transform:translate(2px,2px);box-shadow:none}
+button.primary{background:var(--forest);color:#fff}
+button.accent{background:var(--flag);color:#fff}
+button.small{padding:6px 10px;font-size:13px;box-shadow:1px 1px 0 var(--ink)}
+button.ghost{border-color:var(--line);box-shadow:none;font-weight:500}
+button:disabled{opacity:.45;cursor:default}
+input,select,textarea{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--ink);
+  border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:60px}
+label{font-size:13px;font-weight:700;display:block;margin:10px 0 4px}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1}
+.row .fix{flex:0 0 auto}
+.stack>*+*{margin-top:10px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1.5px solid var(--ink)}
+.tag.ok{background:#DDF2E4;color:var(--ok)}
+.tag.warn{background:var(--flag-l);color:var(--flag)}
+.banner{border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;margin-bottom:12px;border:1.5px solid}
+.banner.ok{background:#DDF2E4;border-color:var(--ok);color:var(--ok)}
+.banner.err{background:#FBE7E5;border-color:var(--err);color:var(--err)}
+.tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{box-shadow:none;border-color:var(--line);font-size:13px;padding:8px 12px;background:transparent}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.postline{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.postline .name{flex:1;font-weight:700}
+.seq{display:flex;align-items:flex-start;gap:8px;padding:10px;border:1.5px dashed var(--line);border-radius:10px;margin-top:8px}
+.seq .n{font-family:var(--mono);font-size:13px;background:var(--ink);color:#fff;border-radius:6px;padding:2px 7px;margin-top:2px}
+.progressbar{display:flex;gap:5px;margin:10px 0}
+.progressbar i{flex:1;height:8px;border-radius:4px;background:#E7E2D6;border:1px solid var(--line)}
+.progressbar i.done{background:var(--flag);border-color:var(--flag)}
+.compass{width:120px;height:120px;border-radius:50%;border:3px solid var(--ink);position:relative;background:#fff;flex:0 0 auto}
+.compass .needle{position:absolute;left:50%;top:50%;width:0;height:0;transform-origin:center;
+  border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:44px solid var(--flag);
+  margin-left:-8px;margin-top:-44px}
+.compass .dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%)}
+.compass span{position:absolute;font-size:11px;font-weight:900}
+.compass .N{top:4px;left:50%;transform:translateX(-50%)} .compass .S{bottom:4px;left:50%;transform:translateX(-50%)}
+.compass .E{right:7px;top:50%;transform:translateY(-50%)} .compass .O{left:7px;top:50%;transform:translateY(-50%)}
+.bigtime{font-family:var(--mono);font-size:34px;font-weight:500;letter-spacing:1px}
+#video{width:100%;border-radius:12px;border:2px solid var(--ink);background:#000}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.qrgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qrcard{border:2px solid var(--ink);border-radius:10px;padding:12px;text-align:center;background:#fff}
+.qrcard .qrbox{display:flex;justify-content:center;margin:8px 0}
+.qrcard .flaghead{height:10px;border-radius:4px 4px 0 0;margin:-12px -12px 8px;
+  background:linear-gradient(135deg,#fff 0 50%,var(--flag) 50% 100%);border-bottom:2px solid var(--ink)}
+.clueimg{width:100%;border:1.5px solid var(--ink);border-radius:10px;margin-top:8px;display:block;background:#EFEAE0;min-height:60px}
+.hidden{display:none!important}
+.center{text-align:center}
+.divider{border:none;border-top:1.5px dashed var(--line);margin:16px 0}
+@media print{
+  body::before{display:none}
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{position:absolute;top:0;left:0;width:100%}
+  .qrgrid{grid-template-columns:1fr 1fr}
+  .qrcard{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="printArea" class="hidden"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script>
+/* ============ ÉTAT & STOCKAGE ============ */
+const S = { config:null, team:null, view:'home', orgaTab:'postes', scanStream:null, scanRAF:null, chronoIv:null, heading:null };
+const memStore = {}; // cache local : lecture hors-ligne + repli si window.storage indisponible
+const dirty = {};    // écritures en attente de synchronisation (réseau coupé)
+
+/* =====================================================================
+   STOCKAGE GITHUB — remplissez ce bloc AVANT de déposer le fichier
+   sur GitHub Pages. Laissez-le vide pour un usage local.
+     owner  : votre nom d'utilisateur GitHub
+     repo   : un dépôt DÉDIÉ à cette application (rien d'autre dedans)
+     branch : généralement "main"
+     token  : jeton « fine-grained », limité à CE dépôt uniquement,
+              permission « Contents : Read and write »
+
+   AVERTISSEMENT : ce jeton est lisible par quiconque consulte le code
+   de la page. C'est pourquoi il doit être limité à un dépôt dédié et
+   révoqué après la course. Le pire scénario reste alors la modification
+   de ce dépôt-là — rien d'autre sur votre compte GitHub.
+   ===================================================================== */
+const GH = { owner:'', repo:'', branch:'main', token:'', dir:'donnees' };
+
+/* Trois environnements possibles :
+   - GITHUB   : le dépôt sert de base de données → partage entre tous les appareils
+   - ARTEFACT : window.storage existe (appli publiée) → partage également
+   - AUTONOME : fichier ouvert localement → localStorage, sur cet appareil seulement */
+const GH_ON = !!(GH.owner && GH.repo && GH.token);
+const ART_ON = !!window.storage;
+const SHARED_MODE = GH_ON || ART_ON;
+const LS = 'balise:';
+
+/* ---- Accès au dépôt GitHub via l'API Contents ---- */
+const shaCache = {};
+const ghPath = key=>GH.dir+'/'+key.replace(/:/g,'_')+'.json';
+const keyFromFile = n=>n.replace(/\.json$/,'').replace(/_/g,':');
+const ghHead = ()=>({'Authorization':'Bearer '+GH.token,'Accept':'application/vnd.github+json'});
+function b64enc(str){
+  const bytes=new TextEncoder().encode(str);
+  let bin=''; const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+function b64dec(b64){
+  return new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g,'')),c=>c.charCodeAt(0)));
+}
+async function ghGet(key){
+  const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${ghPath(key)}?ref=${GH.branch}`,{headers:ghHead(),cache:'no-store'});
+  if(r.status===404) return null;
+  if(!r.ok) throw new Error('GitHub '+r.status);
+  const j=await r.json();
+  shaCache[key]=j.sha;
+  return JSON.parse(j.content? b64dec(j.content) : await (await fetch(j.download_url)).text());
+}
+async function ghPut(key,val){
+  const url=`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${ghPath(key)}`;
+  const body={message:'balise: '+key, content:b64enc(JSON.stringify(val)), branch:GH.branch};
+  if(shaCache[key]) body.sha=shaCache[key];
+  let r=await fetch(url,{method:'PUT',headers:ghHead(),body:JSON.stringify(body)});
+  if(r.status===409||r.status===422){ // version obsolète : on relit le sha et on réessaie
+    try{ await ghGet(key); body.sha=shaCache[key]; }catch(e){ delete body.sha; }
+    r=await fetch(url,{method:'PUT',headers:ghHead(),body:JSON.stringify(body)});
+  }
+  if(!r.ok) throw new Error('GitHub '+r.status);
+  const j=await r.json();
+  if(j.content) shaCache[key]=j.content.sha;
+}
+async function ghDel(key){
+  if(!shaCache[key]){ try{ await ghGet(key); }catch(e){ return; } }
+  if(!shaCache[key]) return;
+  await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${ghPath(key)}`,{method:'DELETE',headers:ghHead(),
+    body:JSON.stringify({message:'balise: suppression '+key, sha:shaCache[key], branch:GH.branch})});
+  delete shaCache[key];
+}
+async function ghList(prefix){
+  const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.dir}?ref=${GH.branch}`,{headers:ghHead(),cache:'no-store'});
+  if(!r.ok) return [];
+  const j=await r.json();
+  return Array.isArray(j)? j.map(f=>keyFromFile(f.name)).filter(k=>k.startsWith(prefix)) : [];
+}
+function lsLoadAll(){
+  if(SHARED_MODE) return;
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && k.startsWith(LS)){
+        try{ memStore[k.slice(LS.length)]=JSON.parse(localStorage.getItem(k)); }catch(e){}
+      }
+    }
+  }catch(e){ S.noPersist=true; }
+}
+function lsSet(key,val){
+  if(SHARED_MODE) return;
+  try{ localStorage.setItem(LS+key, JSON.stringify(val)); S.quotaFull=false; }
+  catch(e){ S.quotaFull=true; }
+}
+function lsDel(key){ if(!SHARED_MODE){ try{ localStorage.removeItem(LS+key); }catch(e){} } }
+
+async function stGet(key, shared){
+  try{
+    if(GH_ON){ const v=await ghGet(key); if(v!==null) memStore[key]=v; return v; }
+    if(ART_ON){
+      const r = await window.storage.get(key, !!shared);
+      const v = r? JSON.parse(r.value):null;
+      if(v!==null) memStore[key]=v; // toute lecture réussie alimente le cache hors-ligne
+      return v;
+    }
+  }
+  catch(e){ /* clé absente ou réseau coupé : on sert le cache */ }
+  return memStore[key]!==undefined? memStore[key]:null;
+}
+async function stSet(key, val, shared){
+  memStore[key]=val;
+  lsSet(key,val); // persistance locale en mode autonome
+  try{
+    if(GH_ON){ await ghPut(key,val); delete dirty[key]; }
+    else if(ART_ON){ await window.storage.set(key, JSON.stringify(val), !!shared); delete dirty[key]; }
+  }catch(e){ dirty[key]=shared; }
+  setSyncBadge();
+}
+async function stList(prefix, shared){
+  try{
+    if(GH_ON) return await ghList(prefix);
+    if(ART_ON){ const r = await window.storage.list(prefix, !!shared); return r? r.keys:[]; }
+  }
+  catch(e){}
+  return Object.keys(memStore).filter(k=>k.startsWith(prefix));
+}
+async function stDel(key, shared){
+  delete memStore[key]; delete dirty[key]; lsDel(key);
+  try{
+    if(GH_ON) await ghDel(key);
+    else if(ART_ON) await window.storage.delete(key, !!shared);
+  }catch(e){}
+}
+/* Resynchronisation : toutes les 12 s, on retente les écritures en attente */
+setInterval(async ()=>{
+  const keys=Object.keys(dirty);
+  for(const k of keys){
+    try{
+      if(GH_ON) await ghPut(k, memStore[k]);
+      else if(ART_ON) await window.storage.set(k, JSON.stringify(memStore[k]), !!dirty[k]);
+      else break;
+      delete dirty[k];
+    }
+    catch(e){ break; } // toujours hors-ligne, on réessaiera
+  }
+  setSyncBadge();
+}, 12000);
+function setSyncBadge(){
+  const b=el('syncBadge'); if(!b) return;
+  const n=Object.keys(dirty).length;
+  b.className = n? 'tag warn':'tag ok';
+  b.textContent = n? 'hors-ligne · '+n+' scan(s) à synchroniser' : 'synchronisé';
+}
+
+const uid = ()=>Math.random().toString(36).slice(2,9);
+const token = ()=>{ const a='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let t=''; for(let i=0;i<6;i++) t+=a[Math.floor(Math.random()*a.length)]; return t; };
+const el = id=>document.getElementById(id);
+const esc = s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtT = ms=>{ const s=Math.floor(ms/1000); const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  return (h? String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'); };
+const fmtClock = t=>new Date(t).toLocaleTimeString('fr-CH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+async function loadAdmin(){ S.admin = await stGet('co:admin', true); S.races = (await stGet('co:races', true))||[]; }
+async function saveRaces(){ await stSet('co:races', S.races, true); }
+async function loadConfig(){
+  await loadAdmin();
+  S.config = S.raceId? await stGet('co:race:'+S.raceId, true) : null;
+}
+async function saveConfig(){
+  if(!S.raceId||!S.config) return;
+  await stSet('co:race:'+S.raceId, S.config, true);
+  const r=S.races.find(r=>r.id===S.raceId);
+  if(r && r.name!==S.config.title){ r.name=S.config.title; await saveRaces(); }
+}
+async function saveTeam(){ if(S.team){ await stSet('co:team:'+S.raceId+':'+S.team.id, S.team, true); await stSet('co:me', {raceId:S.raceId, teamId:S.team.id}, false); } }
+/* Migration de l'ancien format mono-course */
+async function migrateLegacy(){
+  const old = await stGet('co:config', true);
+  if(!old) return;
+  await loadAdmin();
+  if(!S.admin) { S.admin={pin:old.pin}; await stSet('co:admin',S.admin,true); }
+  if(!S.races.length){
+    const id=uid();
+    const cfg={title:old.title,posts:old.posts,courses:old.courses,nextCourseIdx:old.nextCourseIdx||0};
+    await stSet('co:race:'+id, cfg, true);
+    S.races=[{id,name:cfg.title,created:Date.now(),archived:false}];
+    await saveRaces();
+    await stDel('co:config', true);
+  }
+}
+
+/* ============ EXEMPLE DE COURSE ============ */
+function exampleConfig(pin){
+  const noms=['Départ – Préau','Grand chêne','Pont de bois','Rocher fendu','Fontaine','Croisée des sentiers',
+    'Cabane forestière','Clairière','Vieux mur','Ruisseau','Borne 27','Arrivée – Terrain de sport'];
+  const posts = noms.map(n=>({id:uid(),name:n,token:token(),mode:'qr',radius:30}));
+  const id = i=>posts[i].id;
+  // 4 parcours "papillon" : mêmes postes, ordres différents, départ/arrivée communs
+  const ordres = [
+    [0,1,2,3,4,5,6,7,8,9,10,11],
+    [0,4,5,1,2,3,9,10,6,7,8,11],
+    [0,8,9,10,6,7,1,2,4,5,3,11],
+    [0,3,2,1,7,6,10,9,8,5,4,11]
+  ];
+  const azimuts=[0,65,120,210,300,45,150,255,330,90,180,20];
+  const courses = ordres.map((o,ci)=>({
+    id:uid(), name:'Parcours '+String.fromCharCode(65+ci),
+    steps:o.map((pi,si)=>({
+      postId:id(pi),
+      clueText: si===0? 'Rendez-vous au point de départ pour lancer votre chrono.'
+        : 'Depuis le poste précédent, suivez l\u2019azimut indiqué. Cherchez : '+noms[pi].toLowerCase()+'.',
+      azimuth: azimuts[(pi+ci)%12], dist: 150+((pi*70+ci*40)%400)
+    }))
+  }));
+  return { title:'Course d\u2019orientation', posts, courses, nextCourseIdx:0 };
+}
+
+/* ============ RENDU ============ */
+function render(){
+  stopScan(); clearInterval(S.chronoIv); clearInterval(S.suiviIv);
+  const v=S.view;
+  if(v==='home') renderHome();
+  else if(v==='orgaLogin') renderOrgaLogin();
+  else if(v==='races') renderRaces();
+  else if(v==='orga') renderOrga();
+  else if(v==='join') renderJoin();
+  else if(v==='race') renderRace();
+  else if(v==='scan') renderScan();
+}
+
+function shell(html){ el('app').innerHTML = html; }
+
+/* ---- Accueil ---- */
+function renderHome(){
+  shell(`
+  <div class="center" style="margin:30px 0 26px">
+    <h1><span class="flagmark"></span> Balise</h1>
+    <p class="muted">Contrôle des postes de passage par QR code</p>
+  </div>
+  <div class="card stack">
+    <h2>Je participe</h2>
+    <p class="muted">Rejoignez la course avec votre équipe et scannez les postes sur le terrain.</p>
+    <button class="primary" onclick="go('join')">Rejoindre la course</button>
+  </div>
+  <div class="card stack">
+    <h2>J'organise</h2>
+    <p class="muted">Créez les postes, les parcours et les indices, imprimez les QR codes, suivez les équipes.</p>
+    <button onclick="go('orgaLogin')">Espace organisateur</button>
+  </div>
+  <div class="card">
+    <h3>${GH_ON? 'Stockage GitHub actif':(ART_ON? 'Stockage partagé actif':'Mode autonome')}</h3>
+    <p class="muted">${GH_ON
+      ? 'Les données sont enregistrées dans le dépôt <b>'+esc(GH.owner)+'/'+esc(GH.repo)+'</b> : toutes les équipes qui ouvrent ce lien partagent la même course.'
+      : (ART_ON? 'Les données sont partagées entre tous les appareils qui ouvrent ce lien.'
+              : 'Ce fichier tourne en local : vos courses sont conservées dans ce navigateur, mais les équipes ne peuvent pas les rejoindre depuis un autre appareil.')}</p>
+  </div>`);
+}
+function go(v){ S.view=v; render(); }
+
+/* ---- Connexion organisateur ---- */
+async function renderOrgaLogin(){
+  await migrateLegacy();
+  await loadAdmin();
+  const first = !S.admin;
+  shell(`
+  <button class="ghost small" onclick="go('home')">&larr; Accueil</button>
+  <div class="card stack" style="margin-top:14px">
+    <h2>${first? 'Créer votre espace organisateur':'Espace organisateur'}</h2>
+    ${first? '<p class="muted">Choisissez un code PIN : il protégera toutes vos courses sur cet espace.</p>':''}
+    <label>Code PIN organisateur</label>
+    <input id="pin" type="password" inputmode="numeric" placeholder="ex. 4832">
+    <div id="loginMsg"></div>
+    <button class="primary" onclick="orgaLogin(${first})">${first? 'Créer l\u2019espace':'Entrer'}</button>
+  </div>`);
+}
+async function orgaLogin(first){
+  const pin = el('pin').value.trim();
+  if(!pin){ el('loginMsg').innerHTML='<div class="banner err">Saisissez un code PIN.</div>'; return; }
+  if(first){
+    S.admin={pin}; await stSet('co:admin',S.admin,true);
+    S.unlocked=true; go('races');
+  } else if(S.admin.pin===pin){ S.unlocked=true; go('races'); }
+  else el('loginMsg').innerHTML='<div class="banner err">Code PIN incorrect.</div>';
+}
+
+/* ---- Mes courses ---- */
+async function renderRaces(){
+  if(!S.unlocked){ go('orgaLogin'); return; }
+  await loadAdmin();
+  const active=S.races.filter(r=>!r.archived), archived=S.races.filter(r=>r.archived);
+  const raceRow = r=>`
+    <div class="postline">
+      <span class="flagmark" style="width:16px;height:16px;flex:0 0 auto"></span>
+      <span class="name">${esc(r.name)}${r.archived?' <span class="tag">archivée</span>':''}</span>
+      <button class="small primary" onclick="openRace('${r.id}')">Ouvrir</button>
+      <button class="small ghost" onclick="duplicateRace('${r.id}')" title="Dupliquer">⧉</button>
+      <button class="small ghost" onclick="exportRace('${r.id}')" title="Sauvegarder dans un fichier">⤓</button>
+      <button class="small ghost" onclick="toggleArchive('${r.id}')">${r.archived?'Réactiver':'Archiver'}</button>
+      <button class="small ghost" onclick="delRace('${r.id}')">&times;</button>
+    </div>`;
+  shell(`
+  <div class="row" style="margin-bottom:14px">
+    <h1 style="font-size:20px"><span class="flagmark"></span> Mes courses</h1>
+    <button class="ghost small fix" onclick="S.unlocked=false;go('home')">Quitter</button>
+  </div>
+  <div class="card">
+    <h2>Courses actives <span class="tag">${active.length}</span></h2>
+    ${active.map(raceRow).join('')||'<p class="muted">Aucune course active. Créez-en une ci-dessous.</p>'}
+  </div>
+  ${archived.length? `<div class="card"><h2>Archivées</h2>${archived.map(raceRow).join('')}
+    <p class="muted" style="margin-top:8px">Les courses archivées n'apparaissent plus dans la liste des participants.</p></div>`:''}
+  <div class="card stack">
+    <h3>Nouvelle course</h3>
+    <div class="row">
+      <input id="newRaceName" placeholder="Nom (ex. CO d'automne 2026)">
+    </div>
+    <label><input type="checkbox" id="newRaceSeed" style="width:auto;margin-right:6px">Pré-remplir avec l'exemple (12 postes, 4 parcours)</label>
+    <button class="primary" onclick="createRace()">Créer</button>
+  </div>
+  <div class="card stack">
+    <h3>Sauvegarde et transfert</h3>
+    <p class="muted">Le bouton ⤓ de chaque course l'enregistre dans un fichier. Ce fichier contient tout : postes, coordonnées, parcours, indices et images. Gardez-le comme sauvegarde, ou importez-le sur un autre appareil.</p>
+    <input type="file" id="importFile" accept=".json,application/json" class="hidden" onchange="importRaceFile(this)">
+    <button onclick="importRacePrompt()">Importer une course depuis un fichier</button>
+  </div>
+  <div class="card">
+    <h3>${GH_ON? 'Stockage GitHub':(ART_ON? 'Mode partagé':'Mode autonome (fichier local)')}</h3>
+    ${GH_ON
+      ? '<p class="muted">Dépôt <b>'+esc(GH.owner)+'/'+esc(GH.repo)+'</b>, dossier <b>'+esc(GH.dir)+'</b>. Chaque course et chaque équipe y sont enregistrées en fichier JSON. Toutes les équipes qui ouvrent ce lien partagent les mêmes données.</p><div id="ghTest"></div><button class="small ghost" onclick="testGH()">Tester la connexion au dépôt</button>'
+      : (ART_ON
+        ? '<p class="muted">Vos courses sont enregistrées sur l\u2019espace partagé de l\u2019application : les équipes qui ouvrent le même lien voient vos courses, et leurs scans remontent dans votre suivi.</p>'
+        : '<p class="muted">Ce fichier tourne en local. Vos courses sont enregistrées dans ce navigateur, sur cet appareil uniquement — elles survivent à la fermeture de la page, mais <b>les équipes ne peuvent pas les rejoindre depuis leur téléphone</b>. Renseignez le bloc GH en haut du fichier et déposez-le sur GitHub Pages, ou publiez l\u2019application.</p>')}
+    ${S.quotaFull? '<div class="banner err">Espace de stockage du navigateur saturé (images trop lourdes). Sauvegardez vos courses en fichier et allégez les images.</div>':''}
+  </div>`);
+}
+/* Diagnostic : vérifie que le dépôt est joignable et le jeton valide en écriture */
+async function testGH(){
+  const box=el('ghTest'); if(!box) return;
+  box.innerHTML='<p class="muted">Test en cours…</p>';
+  try{
+    const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`,{headers:ghHead(),cache:'no-store'});
+    if(r.status===401) throw new Error('jeton refusé (401) — vérifiez sa validité');
+    if(r.status===404) throw new Error('dépôt introuvable (404) — vérifiez owner/repo et la portée du jeton');
+    if(!r.ok) throw new Error('réponse '+r.status);
+    await ghPut('co:test', {ok:Date.now()});
+    await ghDel('co:test');
+    box.innerHTML='<div class="banner ok">Connexion et écriture confirmées.</div>';
+  }catch(e){
+    box.innerHTML='<div class="banner err">Échec : '+esc(e.message)+'</div>';
+  }
+}
+
+/* ---- Sauvegarde et transfert d'une course en fichier ---- */
+async function exportRace(id){
+  const cfg=await stGet('co:race:'+id, true); if(!cfg) return;
+  const imgs={};
+  for(const c of cfg.courses||[]) for(const s of c.steps||[]){
+    if(s.imgId){ const d=await stGet('co:img:'+s.imgId,true); if(d) imgs[s.imgId]=d; }
+  }
+  const pack={format:'balise-course-v1', exported:new Date().toISOString(), config:cfg, images:imgs};
+  download((cfg.title||'course').replace(/\s+/g,'-')+'.balise.json','application/json',JSON.stringify(pack));
+}
+function importRacePrompt(){ el('importFile').click(); }
+async function importRaceFile(input){
+  const f=input.files && input.files[0]; if(!f) return;
+  try{
+    const pack=JSON.parse(await f.text());
+    if(!pack.config || !pack.config.posts) throw new Error('Fichier non reconnu');
+    for(const iid in (pack.images||{})){ await stSet('co:img:'+iid, pack.images[iid], true); }
+    const nid=uid();
+    await stSet('co:race:'+nid, pack.config, true);
+    S.races.push({id:nid,name:pack.config.title||'Course importée',created:Date.now(),archived:false});
+    await saveRaces(); renderRaces();
+  }catch(e){ alert('Import impossible : '+e.message); }
+  input.value='';
+}
+
+async function createRace(){
+  const name=el('newRaceName').value.trim()||'Nouvelle course';
+  const cfg = el('newRaceSeed').checked? exampleConfig() : {title:name,posts:[],courses:[],nextCourseIdx:0};
+  cfg.title=name;
+  const id=uid();
+  await stSet('co:race:'+id, cfg, true);
+  S.races.push({id,name,created:Date.now(),archived:false});
+  await saveRaces(); renderRaces();
+}
+async function openRace(id){
+  S.raceId=id; await loadConfig();
+  if(!S.config){ alert('Course introuvable.'); return; }
+  S.orgaTab='postes'; go('orga');
+}
+async function duplicateRace(id){
+  const src=await stGet('co:race:'+id, true); if(!src) return;
+  const copy=JSON.parse(JSON.stringify(src));
+  copy.title=src.title+' (copie)'; copy.nextCourseIdx=0;
+  const nid=uid();
+  await stSet('co:race:'+nid, copy, true);
+  S.races.push({id:nid,name:copy.title,created:Date.now(),archived:false});
+  await saveRaces(); renderRaces();
+}
+async function toggleArchive(id){
+  const r=S.races.find(r=>r.id===id); r.archived=!r.archived;
+  await saveRaces(); renderRaces();
+}
+async function delRace(id){
+  if(!confirm('Supprimer définitivement cette course, ses parcours et ses équipes ?')) return;
+  await stDel('co:race:'+id, true);
+  const keys=await stList('co:team:'+id+':', true);
+  for(const k of keys) await stDel(k, true);
+  S.races=S.races.filter(r=>r.id!==id);
+  await saveRaces(); renderRaces();
+}
+
+/* ---- Espace organisateur ---- */
+function renderOrga(){
+  const t=S.orgaTab;
+  shell(`
+  <div class="row" style="margin-bottom:14px">
+    <h1 style="font-size:20px;cursor:pointer" onclick="renameRace()" title="Cliquer pour renommer"><span class="flagmark"></span> ${esc(S.config.title)}</h1>
+    <button class="ghost small fix" onclick="go('races')">&larr; Mes courses</button>
+  </div>
+  <div class="tabs">
+    <button class="${t==='postes'?'on':''}" onclick="orgaTab('postes')">Postes</button>
+    <button class="${t==='parcours'?'on':''}" onclick="orgaTab('parcours')">Parcours</button>
+    <button class="${t==='qr'?'on':''}" onclick="orgaTab('qr')">QR codes</button>
+    <button class="${t==='suivi'?'on':''}" onclick="orgaTab('suivi')">Suivi</button>
+  </div>
+  <div id="tabBody"></div>`);
+  if(t==='postes') tabPostes();
+  else if(t==='parcours') tabParcours();
+  else if(t==='qr') tabQR();
+  else tabSuivi();
+}
+function orgaTab(t){ S.orgaTab=t; render(); }
+async function renameRace(){
+  const n=prompt('Nom de la course :', S.config.title);
+  if(n){ S.config.title=n.trim(); await saveConfig(); render(); }
+}
+
+function tabPostes(){
+  el('tabBody').innerHTML = `
+  <div class="card">
+    <h2>Postes fixes <span class="tag">${S.config.posts.length}</span></h2>
+    <p class="muted">Chaque poste se valide par QR code, par GPS (présence dans un rayon autour du point), ou les deux. Le même poste peut servir à tous les parcours.</p>
+    <p class="muted">Les indices (texte, azimut, distance, carte ou photo) se règlent dans l'onglet <b>Parcours</b>, car ils dépendent de l'étape de chaque parcours, pas du poste lui-même.</p>
+    <div id="postList">${S.config.posts.map((p,i)=>postEditor(p,i)).join('')||'<p class="muted">Aucun poste pour l\u2019instant.</p>'}
+    </div>
+    <div class="row" style="margin-top:12px">
+      <input id="newPost" placeholder="Nom du poste (ex. Grand chêne)">
+      <button class="fix primary" onclick="addPost()">Ajouter</button>
+    </div>
+  </div>`;
+}
+function postEditor(p,i){
+  const mode=p.mode||'qr';
+  const gps = mode==='gps'||mode==='both';
+  return `<div class="seq" style="display:block">
+    <div class="row">
+      <span class="n fix">${String(i+1).padStart(2,'0')}</span>
+      <span class="name" style="flex:1">${esc(p.name)}</span>
+      <span class="mono muted fix" style="font-size:12px">${p.token}</span>
+      <button class="small ghost fix" onclick="renamePost('${p.id}')">Renommer</button>
+      <button class="small ghost fix" onclick="delPost('${p.id}')">&times;</button>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <div><label>Validation</label>
+        <select onchange="setPostMode('${p.id}',this.value)">
+          <option value="qr" ${mode==='qr'?'selected':''}>QR code</option>
+          <option value="gps" ${mode==='gps'?'selected':''}>GPS (sans balise)</option>
+          <option value="both" ${mode==='both'?'selected':''}>QR ou GPS</option>
+        </select>
+      </div>
+      ${gps?`<div class="fix" style="width:110px"><label>Rayon (m)</label><input type="number" min="10" max="200" value="${p.radius??30}" onchange="setPostField('${p.id}','radius',Number(this.value)||30)"></div>`:''}
+    </div>
+    ${gps? `
+    <label>Coordonnées — collez depuis Google Maps ou map.geo.admin.ch</label>
+    <div class="row">
+      <input id="paste-${p.id}" placeholder="46.7419, 7.2866 · lien · ou LV95 2'586'500 / 1'175'000">
+      <button class="small fix" onclick="applyPastedCoords('${p.id}')">OK</button>
+    </div>
+    <div class="row" style="margin-top:6px;align-items:flex-end">
+      <div><label>Latitude</label><input type="number" step="0.000001" value="${p.lat??''}" placeholder="—" onchange="setPostField('${p.id}','lat',this.value===''?null:Number(this.value))"></div>
+      <div><label>Longitude</label><input type="number" step="0.000001" value="${p.lon??''}" placeholder="—" onchange="setPostField('${p.id}','lon',this.value===''?null:Number(this.value))"></div>
+      <button class="small fix" onclick="markPostHere('${p.id}')">Je suis sur place</button>
+    </div>
+    <div id="coordMsg-${p.id}">${p.lat==null? '<p class="muted" style="margin-top:6px">&#9888; Coordonnées manquantes : validation GPS impossible pour ce poste.</p>':''}</div>
+    `:''}
+  </div>`;
+}
+async function addPost(){
+  const n=el('newPost').value.trim(); if(!n) return;
+  S.config.posts.push({id:uid(),name:n,token:token(),mode:'qr',radius:30});
+  await saveConfig(); tabPostes();
+}
+async function setPostMode(id,v){
+  const p=S.config.posts.find(p=>p.id===id); p.mode=v;
+  await saveConfig(); tabPostes();
+}
+async function setPostField(id,k,v){
+  const p=S.config.posts.find(p=>p.id===id); p[k]=v;
+  await saveConfig();
+}
+/* Conversion coordonnées suisses CH1903+/LV95 (et LV03) vers WGS84 — formules swisstopo, précision ~1 m */
+function lv95ToWgs(E,N){
+  if(E<2000000){ E+=2000000; N+=1000000; } // ancien format LV03
+  const y=(E-2600000)/1e6, x=(N-1200000)/1e6;
+  const lon=(2.6779094 + 4.728982*y + 0.791484*y*x + 0.1306*y*x*x - 0.0436*y*y*y)*100/36;
+  const lat=(16.9023892 + 3.238272*x - 0.270978*y*y - 0.002528*x*x - 0.0447*y*y*x - 0.0140*x*x*x)*100/36;
+  return {lat:+lat.toFixed(6), lon:+lon.toFixed(6)};
+}
+/* Analyse tout ce qu'on peut coller : décimales, lien Google Maps, lien ou coordonnées geo.admin */
+function parseCoords(str){
+  if(!str) return null;
+  let m=str.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/); // lien Google Maps ...@46.74,7.28,15z
+  if(m) return {lat:+m[1], lon:+m[2]};
+  const s=str.replace(/[\u2019'`]/g,'').replace(/[°NEne]/g,' ');
+  const raw=s.match(/-?\d+(?:\.\d+)?/g)||[];
+  const nums=raw.map(Number);
+  for(let i=0;i+1<nums.length;i++){ // priorité aux coordonnées suisses (paires de grands nombres)
+    const a=nums[i], b=nums[i+1];
+    if(a>=2450000&&a<=2850000&&b>=1050000&&b<=1300000) return lv95ToWgs(a,b);
+    if(a>=450000&&a<=850000&&b>=50000&&b<=310000) return lv95ToWgs(a,b);
+  }
+  for(let i=0;i+1<nums.length;i++){ // sinon paire décimale lat/lon
+    const a=nums[i], b=nums[i+1];
+    if(raw[i].includes('.')&&raw[i+1].includes('.')&&Math.abs(a)<=90&&Math.abs(a)>=0.5&&Math.abs(b)<=180) return {lat:a, lon:b};
+  }
+  return null;
+}
+async function applyPastedCoords(id){
+  const input=el('paste-'+id), msg=el('coordMsg-'+id);
+  const c=parseCoords(input.value);
+  if(!c){ msg.innerHTML='<div class="banner err" style="margin-top:6px">Format non reconnu. Collez « 46.7419, 7.2866 », un lien Google Maps, ou des coordonnées suisses « 2586500 / 1175000 ».</div>'; return; }
+  const p=S.config.posts.find(p=>p.id===id);
+  p.lat=c.lat; p.lon=c.lon;
+  await saveConfig(); tabPostes();
+  el('coordMsg-'+id).innerHTML='<div class="banner ok" style="margin-top:6px">Coordonnées enregistrées : '+c.lat+', '+c.lon+'</div>';
+}
+async function markPostHere(id){
+  const msg=el('coordMsg-'+id);
+  msg.innerHTML='<p class="muted" style="margin-top:6px">Recherche satellites… tenez le téléphone à découvert.</p>';
+  const pos=await getPos(12000);
+  if(!pos){ msg.innerHTML='<div class="banner err" style="margin-top:6px">Position introuvable. Vérifiez que la localisation est autorisée et réessayez.</div>'; return; }
+  const p=S.config.posts.find(p=>p.id===id);
+  p.lat=pos.lat; p.lon=pos.lon;
+  await saveConfig(); tabPostes();
+  el('coordMsg-'+id).innerHTML='<div class="banner ok" style="margin-top:6px">Position capturée (précision ±'+pos.acc+' m)'+(pos.acc>15?' — précision moyenne, refaites une capture à découvert si possible':'')+'</div>';
+}
+async function renamePost(id){
+  const p=S.config.posts.find(p=>p.id===id);
+  const n=prompt('Nouveau nom du poste :',p.name);
+  if(n){ p.name=n.trim(); await saveConfig(); tabPostes(); }
+}
+async function delPost(id){
+  if(!confirm('Supprimer ce poste ? Il sera retiré de tous les parcours.')) return;
+  S.config.posts=S.config.posts.filter(p=>p.id!==id);
+  S.config.courses.forEach(c=>c.steps=c.steps.filter(s=>s.postId!==id));
+  await saveConfig(); tabPostes();
+}
+
+function postName(id){ const p=S.config.posts.find(p=>p.id===id); return p?p.name:'(supprimé)'; }
+
+function tabParcours(){
+  el('tabBody').innerHTML = `
+  ${S.config.courses.map(c=>courseCard(c)).join('')}
+  <button class="primary" onclick="addCourse()">+ Nouveau parcours</button>`;
+  hydrateImgs();
+}
+function courseCard(c){
+  return `<div class="card">
+    <div class="row">
+      <h2 style="margin:0">${esc(c.name)} <span class="tag">${c.steps.length} postes</span></h2>
+      <button class="small ghost fix" onclick="delCourse('${c.id}')">Supprimer</button>
+    </div>
+    ${c.steps.map((s,i)=>`
+      <div class="seq">
+        <span class="n">${i+1}</span>
+        <div style="flex:1">
+          <div class="row">
+            <select onchange="setStepPost('${c.id}',${i},this.value)">
+              ${S.config.posts.map(p=>`<option value="${p.id}" ${p.id===s.postId?'selected':''}>${esc(p.name)}</option>`).join('')}
+            </select>
+            <button class="small ghost fix" onclick="moveStep('${c.id}',${i},-1)">&uarr;</button>
+            <button class="small ghost fix" onclick="moveStep('${c.id}',${i},1)">&darr;</button>
+            <button class="small ghost fix" onclick="delStep('${c.id}',${i})">&times;</button>
+          </div>
+          <label>Indice affiché pour trouver ce poste</label>
+          <textarea onchange="setStepClue('${c.id}',${i},'clueText',this.value)">${esc(s.clueText||'')}</textarea>
+          <div class="row">
+            <div><label>Azimut (°)</label><input type="number" min="0" max="359" value="${s.azimuth??''}" placeholder="—" onchange="setStepClue('${c.id}',${i},'azimuth',this.value)"></div>
+            <div><label>Distance (m)</label><input type="number" min="0" value="${s.dist??''}" placeholder="—" onchange="setStepClue('${c.id}',${i},'dist',this.value)"></div>
+          </div>
+          <label>Carte ou photo-indice (optionnel)</label>
+          <div class="row">
+            <input type="file" accept="image/*" onchange="pickStepImg('${c.id}',${i},this)">
+            ${s.imgId? `<button class="small ghost fix" onclick="removeStepImg('${c.id}',${i})">Retirer l'image</button>`:''}
+          </div>
+          ${s.imgId? `<img data-imgid="${s.imgId}" class="clueimg" alt="Indice visuel">`:''}
+        </div>
+      </div>`).join('')}
+    <button class="small" style="margin-top:10px" onclick="addStep('${c.id}')">+ Ajouter un poste au parcours</button>
+  </div>`;
+}
+async function addCourse(){
+  const name='Parcours '+String.fromCharCode(65+S.config.courses.length);
+  S.config.courses.push({id:uid(),name,steps:[]});
+  await saveConfig(); tabParcours();
+}
+async function delCourse(id){
+  if(!confirm('Supprimer ce parcours ?')) return;
+  S.config.courses=S.config.courses.filter(c=>c.id!==id);
+  await saveConfig(); tabParcours();
+}
+async function addStep(cid){
+  const c=S.config.courses.find(c=>c.id===cid);
+  if(!S.config.posts.length){ alert('Créez d\u2019abord des postes.'); return; }
+  c.steps.push({postId:S.config.posts[0].id,clueText:'',azimuth:null,dist:null});
+  await saveConfig(); tabParcours();
+}
+async function setStepPost(cid,i,pid){ S.config.courses.find(c=>c.id===cid).steps[i].postId=pid; await saveConfig(); }
+async function setStepClue(cid,i,k,v){
+  const s=S.config.courses.find(c=>c.id===cid).steps[i];
+  s[k]= (k==='clueText')? v : (v===''?null:Number(v));
+  await saveConfig();
+}
+async function moveStep(cid,i,d){
+  const st=S.config.courses.find(c=>c.id===cid).steps;
+  const j=i+d; if(j<0||j>=st.length) return;
+  [st[i],st[j]]=[st[j],st[i]]; await saveConfig(); tabParcours();
+}
+async function delStep(cid,i){
+  S.config.courses.find(c=>c.id===cid).steps.splice(i,1);
+  await saveConfig(); tabParcours();
+}
+
+/* ---- Images d'indice (cartes / photos) ---- */
+const imgCache={};
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=900;
+      const scale=Math.min(1, MAX/Math.max(img.width,img.height));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      let q=0.72, data=canvas.toDataURL('image/jpeg',q);
+      while(data.length>700000 && q>0.35){ q-=0.1; data=canvas.toDataURL('image/jpeg',q); }
+      URL.revokeObjectURL(img.src);
+      resolve(data);
+    };
+    img.onerror=()=>reject(new Error('Image illisible'));
+    img.src=URL.createObjectURL(file);
+  });
+}
+async function pickStepImg(cid,i,input){
+  const file=input.files && input.files[0]; if(!file) return;
+  input.disabled=true;
+  try{
+    const data=await compressImage(file);
+    const s=S.config.courses.find(c=>c.id===cid).steps[i];
+    if(s.imgId) await stDel('co:img:'+s.imgId,true);
+    const id=uid();
+    await stSet('co:img:'+id, data, true);
+    imgCache[id]=data;
+    s.imgId=id;
+    await saveConfig(); tabParcours();
+  }catch(e){ alert('Impossible de charger cette image : '+e.message); input.disabled=false; }
+}
+async function removeStepImg(cid,i){
+  const s=S.config.courses.find(c=>c.id===cid).steps[i];
+  if(s.imgId){ await stDel('co:img:'+s.imgId,true); delete imgCache[s.imgId]; s.imgId=null; }
+  await saveConfig(); tabParcours();
+}
+async function hydrateImgs(){
+  const nodes=document.querySelectorAll('img[data-imgid]:not([src])');
+  for(const n of nodes){
+    const id=n.dataset.imgid;
+    if(!imgCache[id]) imgCache[id]=await stGet('co:img:'+id,true);
+    if(imgCache[id]) n.src=imgCache[id];
+    else n.alt='Image indisponible';
+  }
+}
+
+function tabQR(){
+  const qrPosts=S.config.posts.filter(p=>(p.mode||'qr')!=='gps');
+  const gpsOnly=S.config.posts.length-qrPosts.length;
+  el('tabBody').innerHTML = `
+  <div class="card">
+    <h2>Lien de la course</h2>
+    ${SHARED_MODE
+      ? `<p class="muted">Affichez ce QR code au départ : les équipes le scannent avec l'appareil photo de leur téléphone pour ouvrir l'application et rejoindre la course.</p>
+         <div class="qrbox" id="joinQR" style="margin:12px 0"></div>
+         <p class="mono" style="font-size:11px;word-break:break-all;text-align:center" id="joinUrl"></p>`
+      : `<div class="banner err">Mode autonome : ce fichier n'est accessible que sur cet appareil. Publiez l'application pour obtenir un lien que les équipes pourront ouvrir.</div>`}
+  </div>
+  <div class="card">
+    <h2>QR codes des postes</h2>
+    <p class="muted">Imprimez cette planche, découpez et plastifiez chaque carte, puis fixez-les sur le terrain.
+    Le code à 6 caractères permet la saisie manuelle si la caméra d'un téléphone ne fonctionne pas.</p>
+    ${gpsOnly? `<p class="muted">${gpsOnly} poste(s) en validation GPS pure : aucune carte à imprimer pour eux, rien à poser sur le terrain.</p>`:''}
+    <button class="primary" style="margin:10px 0" onclick="printQR()">Imprimer la planche</button>
+    <div class="qrgrid" id="qrgrid"></div>
+  </div>`;
+  if(SHARED_MODE && el('joinQR')){
+    const url=window.location.href;
+    el('joinUrl').textContent=url;
+    new QRCode(el('joinQR'),{text:url,width:170,height:170,correctLevel:QRCode.CorrectLevel.M});
+  }
+  const g=el('qrgrid');
+  qrPosts.forEach(p=>{
+    const d=document.createElement('div'); d.className='qrcard';
+    d.innerHTML=`<div class="flaghead"></div><h3>${esc(p.name)}</h3><div class="qrbox" id="qr-${p.id}"></div>
+      <p class="mono" style="font-size:15px;letter-spacing:2px">${p.token}</p>
+      <p class="muted" style="font-size:11px">Saisie manuelle si besoin</p>`;
+    g.appendChild(d);
+    new QRCode(document.getElementById('qr-'+p.id),{text:'CO:'+p.token,width:110,height:110,correctLevel:QRCode.CorrectLevel.M});
+  });
+}
+function printQR(){
+  el('printArea').innerHTML='<div class="qrgrid">'+el('qrgrid').innerHTML+'</div>';
+  el('printArea').classList.remove('hidden');
+  window.print();
+  setTimeout(()=>el('printArea').classList.add('hidden'),500);
+}
+
+async function tabSuivi(){
+  el('tabBody').innerHTML='<div class="card"><h2>Suivi des équipes</h2><p class="muted">Chargement…</p></div>';
+  const keys = await stList('co:team:'+S.raceId+':', true);
+  const teams=[];
+  for(const k of keys){ const t=await stGet(k,true); if(t) teams.push(t); }
+  teams.sort((a,b)=>(a.end&&b.end)? (a.end-a.start)-(b.end-b.start) : (a.end?-1:b.end?1:(b.scans.length-a.scans.length)));
+  S.lastTeams=teams;
+  el('tabBody').innerHTML = `
+  <div class="card">
+    <div class="row"><h2 style="margin:0">Suivi des équipes</h2>
+      <button class="small fix" onclick="tabSuivi()">Actualiser</button></div>
+    <p class="muted" style="font-size:12px">Actualisation automatique toutes les 20 s.</p>
+    ${teams.length? `<table><tr><th>Équipe</th><th>Parcours</th><th>Postes</th><th>Dernier scan</th><th>Temps</th></tr>
+      ${teams.map(t=>{
+        const c=S.config.courses.find(c=>c.id===t.courseId);
+        const total=c?c.steps.length:'?';
+        const last=t.scans.length? fmtClock(t.scans[t.scans.length-1].t):'—';
+        const tm=t.end? fmtT(t.end-t.start) : (t.start? fmtT(Date.now()-t.start)+' <span class="tag warn">en course</span>':'—');
+        return `<tr><td><b>${esc(t.name)}</b></td><td>${c?esc(c.name):'?'}</td>
+          <td>${t.scans.length}/${total}</td><td class="mono">${last}</td><td class="mono">${tm}</td></tr>`;
+      }).join('')}</table>` : '<p class="muted">Aucune équipe inscrite pour le moment.</p>'}
+  </div>
+  <div class="card">
+    <h2>Vue du terrain</h2>
+    <p class="muted" style="font-size:12px">Position des postes reconstituée à partir des scans GPS des équipes ; elle s'affine à chaque passage. Le point orange indique la dernière position connue de chaque équipe.</p>
+    <div id="schematic"></div>
+  </div>
+  <div class="card stack">
+    <h3>Exporter les parcours et temps de passage</h3>
+    <div class="row">
+      <button onclick="exportGPX()">Fichier GPX (traces)</button>
+      <button onclick="exportCSV()">Fichier CSV (splits)</button>
+    </div>
+    <p class="muted" style="font-size:12px">GPX : une trace par équipe + les postes en points de repère, à ouvrir dans Google Earth, uMap, QGIS… CSV : tous les temps de passage pour votre tableur.</p>
+    <hr class="divider">
+    <button class="small ghost" onclick="resetTeams()">Réinitialiser toutes les équipes</button>
+  </div>`;
+  drawSchematic(teams);
+  clearInterval(S.suiviIv);
+  S.suiviIv=setInterval(()=>{ if(S.view==='orga'&&S.orgaTab==='suivi') tabSuivi(); else clearInterval(S.suiviIv); },20000);
+}
+
+/* ---- Vue schématique auto-calibrée ---- */
+function postAvgPositions(teams){
+  const acc={};
+  teams.forEach(t=>t.scans.forEach(s=>{
+    if(s.lat==null) return;
+    (acc[s.postId]=acc[s.postId]||[]).push(s);
+  }));
+  const out={};
+  for(const pid in acc){
+    const pts=acc[pid];
+    out[pid]={lat:pts.reduce((a,p)=>a+p.lat,0)/pts.length, lon:pts.reduce((a,p)=>a+p.lon,0)/pts.length, n:pts.length};
+  }
+  /* Les coordonnées saisies par l'organisateur priment sur la moyenne des scans */
+  S.config.posts.forEach(p=>{ if(p.lat!=null) out[p.id]={lat:p.lat, lon:p.lon, n:(out[p.id]?out[p.id].n:0)}; });
+  return out;
+}
+function drawSchematic(teams){
+  const box=el('schematic'); if(!box) return;
+  const posts=postAvgPositions(teams);
+  const lastPos=teams.map(t=>{
+    const withGps=[...t.scans].reverse().find(s=>s.lat!=null);
+    return withGps? {name:t.name, lat:withGps.lat, lon:withGps.lon, done:t.end!=null}:null;
+  }).filter(Boolean);
+  const all=[...Object.values(posts), ...lastPos];
+  if(!all.length){ box.innerHTML='<p class="muted">Aucune position GPS reçue pour l\u2019instant. Les points apparaîtront dès les premiers scans.</p>'; return; }
+  let minLat=Math.min(...all.map(p=>p.lat)), maxLat=Math.max(...all.map(p=>p.lat));
+  let minLon=Math.min(...all.map(p=>p.lon)), maxLon=Math.max(...all.map(p=>p.lon));
+  const padLat=(maxLat-minLat||0.001)*0.15, padLon=(maxLon-minLon||0.001)*0.15;
+  minLat-=padLat; maxLat+=padLat; minLon-=padLon; maxLon+=padLon;
+  const W=520, H=340;
+  const kx=Math.cos((minLat+maxLat)/2*Math.PI/180); // correction de la longitude selon la latitude
+  const sx=lon=>((lon-minLon)*kx)/((maxLon-minLon)*kx)*(W-40)+20;
+  const sy=lat=>H-20-((lat-minLat)/(maxLat-minLat))*(H-40);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;border:1.5px dashed var(--line);border-radius:10px;background:#FDFCF8">`;
+  for(const pid in posts){
+    const p=posts[pid], x=sx(p.lon), y=sy(p.lat);
+    svg+=`<rect x="${x-6}" y="${y-6}" width="12" height="12" rx="2" fill="#fff" stroke="#1E2420" stroke-width="1.5"/>
+      <path d="M${x-6},${y+6} L${x+6},${y-6} L${x+6},${y+6} Z" fill="#E8590C"/>
+      <text x="${x}" y="${y-10}" font-size="10" font-family="Archivo,sans-serif" text-anchor="middle" fill="#1E2420">${esc(postName(pid))}</text>`;
+  }
+  lastPos.forEach(t=>{
+    const x=sx(t.lon), y=sy(t.lat);
+    svg+=`<circle cx="${x}" cy="${y}" r="6" fill="${t.done?'#1D7A46':'#E8590C'}" stroke="#1E2420" stroke-width="1.5"/>
+      <text x="${x}" y="${y+18}" font-size="10" font-weight="bold" font-family="Archivo,sans-serif" text-anchor="middle" fill="#1E2420">${esc(t.name)}</text>`;
+  });
+  svg+=`</svg>
+  <p class="muted" style="font-size:11px;margin-top:6px">◻ postes (calibrés sur ${Object.values(posts).reduce((a,p)=>a+p.n,0)} scans) · ● équipe en course · ● équipe arrivée</p>`;
+  box.innerHTML=svg;
+}
+
+/* ---- Exports ---- */
+function download(name, mime, content){
+  const blob=new Blob([content],{type:mime});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000);
+}
+const xmlEsc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+function exportGPX(){
+  const teams=S.lastTeams||[];
+  const posts=postAvgPositions(teams);
+  let g='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Balise" xmlns="http://www.topografix.com/GPX/1/1">\n';
+  for(const pid in posts){
+    const p=posts[pid];
+    g+=`<wpt lat="${p.lat.toFixed(6)}" lon="${p.lon.toFixed(6)}"><name>${xmlEsc(postName(pid))}</name><sym>Flag</sym></wpt>\n`;
+  }
+  teams.forEach(t=>{
+    const pts=t.scans.filter(s=>s.lat!=null);
+    if(!pts.length) return;
+    const c=S.config.courses.find(c=>c.id===t.courseId);
+    g+=`<trk><name>${xmlEsc(t.name)}</name><desc>${xmlEsc(c?c.name:'')} — ${t.end?fmtT(t.end-t.start):'non terminé'}</desc><trkseg>\n`;
+    pts.forEach(s=>{
+      g+=`<trkpt lat="${s.lat.toFixed(6)}" lon="${s.lon.toFixed(6)}"><time>${new Date(s.t).toISOString()}</time><name>${xmlEsc(postName(s.postId))}</name></trkpt>\n`;
+    });
+    g+='</trkseg></trk>\n';
+  });
+  g+='</gpx>';
+  download((S.config.title||'course').replace(/\s+/g,'-')+'.gpx','application/gpx+xml',g);
+}
+function exportCSV(){
+  const teams=S.lastTeams||[];
+  let c='equipe;parcours;ordre;poste;methode;heure_passage;temps_course;latitude;longitude;precision_m\n';
+  teams.forEach(t=>{
+    const co=S.config.courses.find(c=>c.id===t.courseId);
+    t.scans.forEach((s,i)=>{
+      c+=[t.name, co?co.name:'?', i+1, postName(s.postId), s.method||'qr',
+        fmtClock(s.t), t.start? fmtT(s.t-t.start):'',
+        s.lat??'', s.lon??'', s.acc??''
+      ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')+'\n';
+    });
+  });
+  download((S.config.title||'course').replace(/\s+/g,'-')+'-splits.csv','text/csv;charset=utf-8','\ufeff'+c);
+}
+async function resetTeams(){
+  if(!confirm('Effacer toutes les équipes et leurs temps ?')) return;
+  const keys=await stList('co:team:'+S.raceId+':',true);
+  for(const k of keys) await stDel(k,true);
+  tabSuivi();
+}
+
+/* ---- Inscription équipe ---- */
+async function renderJoin(){
+  await migrateLegacy();
+  await loadAdmin();
+  /* Reprise de session : l'équipe retrouve sa course en rouvrant l'appli */
+  const me = await stGet('co:me',false);
+  if(me && me.raceId){
+    const t=await stGet('co:team:'+me.raceId+':'+me.teamId,true);
+    if(t){ S.raceId=me.raceId; await loadConfig(); if(S.config){ S.team=t; go('race'); return; } }
+  }
+  const actives=S.races.filter(r=>!r.archived);
+  if(!actives.length){
+    shell(`<button class="ghost small" onclick="go('home')">&larr; Accueil</button>
+      <div class="card"><h2>Aucune course ouverte</h2>
+      <p class="muted">L'organisateur n'a pas encore publié de course sur cet espace.</p></div>`);
+    return;
+  }
+  /* Choix de la course s'il y en a plusieurs, sinon accès direct */
+  if(!S.raceId || !actives.find(r=>r.id===S.raceId)){
+    if(actives.length===1){ S.raceId=actives[0].id; }
+    else{
+      shell(`
+      <button class="ghost small" onclick="go('home')">&larr; Accueil</button>
+      <div class="card stack" style="margin-top:14px">
+        <h2>Quelle course rejoignez-vous ?</h2>
+        ${actives.map(r=>`<button onclick="S.raceId='${r.id}';renderJoin()"><span class="flagmark" style="width:14px;height:14px"></span> ${esc(r.name)}</button>`).join('')}
+      </div>`);
+      return;
+    }
+  }
+  await loadConfig();
+  if(!S.config || !S.config.courses.length){
+    shell(`<button class="ghost small" onclick="S.raceId=null;go('home')">&larr; Accueil</button>
+      <div class="card"><h2>Course en préparation</h2>
+      <p class="muted">Les parcours de « ${esc(S.config?S.config.title:'')} » ne sont pas encore prêts.</p></div>`);
+    return;
+  }
+  shell(`
+  <button class="ghost small" onclick="S.raceId=null;go('home')">&larr; Accueil</button>
+  <div class="card stack" style="margin-top:14px">
+    <h2>${esc(S.config.title)}</h2>
+    <label>Nom de votre équipe</label>
+    <input id="teamName" placeholder="ex. Les Renards" maxlength="30">
+    <label>Parcours</label>
+    <select id="teamCourse">
+      <option value="auto">Attribution automatique (recommandé)</option>
+      ${S.config.courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}
+    </select>
+    <p class="muted">L'attribution automatique répartit les équipes sur les ${S.config.courses.length} parcours pour éviter les files.</p>
+    <div id="joinMsg"></div>
+    <button class="primary" onclick="createTeam()">C'est parti</button>
+  </div>`);
+}
+async function createTeam(){
+  const name=el('teamName').value.trim();
+  if(!name){ el('joinMsg').innerHTML='<div class="banner err">Donnez un nom à votre équipe.</div>'; return; }
+  let cid=el('teamCourse').value;
+  if(cid==='auto'){
+    await loadConfig();
+    const idx=(S.config.nextCourseIdx||0)%S.config.courses.length;
+    cid=S.config.courses[idx].id;
+    S.config.nextCourseIdx=idx+1; await saveConfig();
+  }
+  S.team={id:uid(),name,courseId:cid,start:null,end:null,scans:[]};
+  await saveTeam();
+  await preloadRaceData(); // met en cache indices et images pour le hors-ligne
+  go('race');
+}
+/* Préchargement hors-ligne : tant qu'il y a du réseau (au départ), on met en
+   cache la config et toutes les images du parcours de l'équipe */
+async function preloadRaceData(){
+  await loadConfig();
+  const c=teamCourse(); if(!c) return;
+  for(const s of c.steps){
+    if(s.imgId && !imgCache[s.imgId]){
+      try{ imgCache[s.imgId]=await stGet('co:img:'+s.imgId,true); }catch(e){}
+    }
+  }
+}
+
+/* ---- Écran de course ---- */
+function teamCourse(){ return S.config.courses.find(c=>c.id===S.team.courseId); }
+
+function renderRace(){
+  const c=teamCourse();
+  if(!c){ shell('<div class="card"><p>Parcours introuvable. Contactez l\u2019organisateur.</p></div>'); return; }
+  const done=S.team.scans.length, total=c.steps.length;
+  const finished = S.team.end!=null;
+  const nextStep = finished? null : c.steps[done];
+  shell(`
+  <div class="row" style="margin-bottom:10px">
+    <div><h1 style="font-size:20px">${esc(S.team.name)}</h1>
+      <p class="muted">${esc(c.name)} · ${total} postes · <span id="syncBadge" class="tag ok">synchronisé</span></p></div>
+    <div class="fix center">
+      <div class="bigtime" id="chrono">${S.team.start? fmtT((S.team.end||Date.now())-S.team.start):'00:00'}</div>
+      <p class="muted" style="font-size:11px">${finished?'temps final':S.team.start?'temps écoulé':'chrono en attente'}</p>
+    </div>
+  </div>
+  <div class="progressbar">${c.steps.map((_,i)=>`<i class="${i<done?'done':''}"></i>`).join('')}</div>
+  <div id="raceBody"></div>`);
+
+  const body=el('raceBody');
+  if(finished){
+    body.innerHTML=`
+    <div class="banner ok">Parcours terminé — bravo !</div>
+    <div class="card center stack">
+      <h2>${fmtT(S.team.end-S.team.start)}</h2>
+      <p class="muted">${total} postes validés</p>
+      <hr class="divider">
+      ${S.team.scans.map((s,i)=>`<p style="font-size:14px"><span class="mono muted">${String(i+1).padStart(2,'0')}</span> ${esc(postName(s.postId))} — <span class="mono">${fmtClock(s.t)}</span></p>`).join('')}
+    </div>`;
+  } else if(!S.team.start){
+    body.innerHTML=`
+    <div class="card stack">
+      <h3>Avant de partir</h3>
+      ${clueBlock(nextStep,'Premier poste à trouver')}
+      <button class="accent" onclick="startRace()">Démarrer le chrono</button>
+    </div>`;
+  } else {
+    const lastScan=S.team.scans[done-1];
+    const expPost=nextStep? S.config.posts.find(p=>p.id===nextStep.postId):null;
+    const mode=expPost? (expPost.mode||'qr'):'qr';
+    const canQR = mode!=='gps';
+    const canGPS = (mode==='gps'||mode==='both') && expPost && expPost.lat!=null;
+    body.innerHTML=`
+    ${lastScan? `<div class="banner ok">Poste « ${esc(postName(lastScan.postId))} » validé à ${fmtClock(lastScan.t)}</div>`:''}
+    <div class="card stack">
+      ${clueBlock(nextStep,'Prochain poste ('+(done+1)+'/'+total+')')}
+      ${canQR? `<button class="primary" onclick="go('scan')">Scanner le poste</button>`:''}
+      ${canGPS? `<button class="${canQR?'':'primary'}" onclick="checkGPS()">Vérifier ma position</button><div id="gpsMsg"></div>`:''}
+      ${mode==='gps'&&!canGPS? '<div class="banner err">Ce poste GPS n\u2019a pas de coordonnées. Signalez-le à l\u2019organisateur.</div>':''}
+      ${canQR? `<details><summary class="muted" style="cursor:pointer">Caméra indisponible ? Saisie manuelle</summary>
+        <div class="row" style="margin-top:8px">
+          <input id="manualCode" placeholder="Code à 6 caractères" maxlength="6" style="text-transform:uppercase">
+          <button class="fix" onclick="manualScan()">Valider</button>
+        </div><div id="manualMsg"></div>
+      </details>`:''}
+    </div>`;
+  }
+  if(S.team.start && !finished){
+    S.chronoIv=setInterval(()=>{ const e=el('chrono'); if(e) e.textContent=fmtT(Date.now()-S.team.start); },1000);
+  }
+  hydrateImgs();
+  preloadRaceData();
+  setSyncBadge();
+  watchCompass();
+}
+function clueBlock(step,title){
+  if(!step) return '';
+  const az=step.azimuth!=null, di=step.dist!=null;
+  return `
+  <p class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">${title}</p>
+  ${step.clueText? `<p style="font-size:15px">${esc(step.clueText)}</p>`:''}
+  ${step.imgId? `<img data-imgid="${step.imgId}" class="clueimg" alt="Carte ou photo-indice" onclick="this.classList.toggle('zoom')">`:''}
+  ${(az||di)? `
+  <div class="row" style="align-items:center">
+    ${az? `<div class="compass fix">
+      <span class="N">N</span><span class="S">S</span><span class="E">E</span><span class="O">O</span>
+      <div class="needle" id="needle" data-az="${step.azimuth}" style="transform:rotate(${step.azimuth}deg)"></div>
+      <div class="dot"></div>
+    </div>`:''}
+    <div>
+      ${az? `<h2 style="margin:0">Azimut ${step.azimuth}°</h2>`:''}
+      ${di? `<p class="muted">Distance ≈ ${step.dist} m</p>`:''}
+      ${az? `<p class="muted" id="compassNote" style="font-size:12px">Boussole fixe (nord en haut)</p>`:''}
+    </div>
+  </div>`:''}`;
+}
+async function startRace(){
+  S.team.start=Date.now(); await saveTeam();
+  /* Amorce la permission GPS au départ, pour ne pas retarder le premier scan */
+  getPos(4000);
+  renderRace();
+}
+/* Position GPS avec délai maximum — ne bloque jamais la validation */
+function getPos(timeout){
+  return new Promise(resolve=>{
+    if(!navigator.geolocation){ resolve(null); return; }
+    const to=setTimeout(()=>resolve(null), timeout+500);
+    navigator.geolocation.getCurrentPosition(
+      p=>{ clearTimeout(to); resolve({lat:+p.coords.latitude.toFixed(6), lon:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0)}); },
+      ()=>{ clearTimeout(to); resolve(null); },
+      {enableHighAccuracy:true, timeout, maximumAge:20000}
+    );
+  });
+}
+
+/* Boussole vivante si le capteur est disponible */
+function watchCompass(){
+  if(S.compassHooked) return;
+  window.addEventListener('deviceorientationabsolute',onHeading,true);
+  window.addEventListener('deviceorientation',onHeading,true);
+  S.compassHooked=true;
+}
+function onHeading(e){
+  let h=null;
+  if(e.webkitCompassHeading!=null) h=e.webkitCompassHeading;
+  else if(e.absolute && e.alpha!=null) h=360-e.alpha;
+  if(h==null) return;
+  const n=el('needle'); if(!n) return;
+  const az=Number(n.dataset.az);
+  n.style.transform='rotate('+((az-h+360)%360)+'deg)';
+  const note=el('compassNote'); if(note) note.textContent='Boussole en direct : la flèche pointe vers le poste';
+}
+
+/* ---- Scan ---- */
+function renderScan(){
+  shell(`
+  <button class="ghost small" onclick="go('race')">&larr; Retour</button>
+  <div class="card stack" style="margin-top:14px">
+    <h2>Scanner le QR du poste</h2>
+    <video id="video" playsinline muted></video>
+    <div id="scanMsg"><p class="muted">Autorisez la caméra, puis visez le QR code.</p></div>
+  </div>`);
+  startScan();
+}
+async function startScan(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    S.scanStream=stream;
+    const video=el('video'); video.srcObject=stream; await video.play();
+    const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    const tick=()=>{
+      if(!S.scanStream) return;
+      if(video.readyState===video.HAVE_ENOUGH_DATA){
+        canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+        ctx.drawImage(video,0,0);
+        const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const code=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+        if(code && code.data.startsWith('CO:')){ handleScan(code.data.slice(3)); return; }
+      }
+      S.scanRAF=requestAnimationFrame(tick);
+    };
+    tick();
+  }catch(err){
+    el('scanMsg').innerHTML=`<div class="banner err">Caméra inaccessible (${esc(err.name)}). Utilisez la saisie manuelle depuis l'écran précédent.</div>`;
+  }
+}
+function stopScan(){
+  if(S.scanRAF) cancelAnimationFrame(S.scanRAF), S.scanRAF=null;
+  if(S.scanStream){ S.scanStream.getTracks().forEach(t=>t.stop()); S.scanStream=null; }
+}
+async function manualScan(){
+  const t=el('manualCode').value.trim().toUpperCase();
+  if(t.length!==6){ el('manualMsg').innerHTML='<div class="banner err" style="margin-top:8px">Le code fait 6 caractères.</div>'; return; }
+  const res=await validateToken(t);
+  if(res.ok) renderRace();
+  else el('manualMsg').innerHTML=`<div class="banner err" style="margin-top:8px">${res.msg}</div>`;
+}
+async function handleScan(tok){
+  stopScan();
+  const res=await validateToken(tok);
+  if(res.ok){ S.view='race'; renderRace(); }
+  else{
+    el('scanMsg').innerHTML=`<div class="banner err">${res.msg}</div>
+      <button onclick="renderScan()">Réessayer</button>`;
+  }
+}
+async function validateToken(tok){
+  await loadConfig(); // récupère la dernière version (indices modifiés, etc.)
+  const post=S.config.posts.find(p=>p.token===tok);
+  if(!post) return {ok:false,msg:'QR code inconnu — ce n\u2019est pas un poste de cette course.'};
+  if((post.mode||'qr')==='gps') return {ok:false,msg:'Ce poste se valide par position GPS, pas par scan.'};
+  return commonValidate(post,'qr');
+}
+/* Distance entre deux points GPS en mètres (formule de haversine) */
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371000, r=x=>x*Math.PI/180;
+  const dLat=r(lat2-lat1), dLon=r(lon2-lon1);
+  const h=Math.sin(dLat/2)**2 + Math.cos(r(lat1))*Math.cos(r(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+async function checkGPS(){
+  const m=el('gpsMsg'); if(!m) return;
+  m.innerHTML='<p class="muted">Recherche satellites…</p>';
+  const pos=await getPos(10000);
+  if(!pos){ m.innerHTML='<div class="banner err">Position introuvable. Autorisez la localisation et tenez le téléphone à découvert.</div>'; return; }
+  await loadConfig();
+  if(!S.team.start){ m.innerHTML='<div class="banner err">Démarrez d\u2019abord le chrono.</div>'; return; }
+  const c=teamCourse();
+  const expected=c.steps[S.team.scans.length];
+  if(!expected){ m.innerHTML='<div class="banner err">Votre parcours est déjà terminé.</div>'; return; }
+  const post=S.config.posts.find(p=>p.id===expected.postId);
+  if(!post || post.lat==null){ m.innerHTML='<div class="banner err">Ce poste ne se valide pas par GPS.</div>'; return; }
+  const d=haversine(pos.lat,pos.lon,post.lat,post.lon);
+  const radius=post.radius||30;
+  if(d<=radius){
+    const res=await commonValidate(post,'gps',pos);
+    if(res.ok){ renderRace(); return; }
+    m.innerHTML='<div class="banner err">'+res.msg+'</div>';
+    return;
+  }
+  /* Réponse volontairement binaire : pas de distance affichée, pour préserver le travail de carte */
+  if(pos.acc>35){
+    m.innerHTML='<div class="banner err">Signal GPS imprécis (±'+pos.acc+' m). Placez-vous en zone plus dégagée, patientez quelques secondes et réessayez.</div>';
+  } else {
+    m.innerHTML='<div class="banner err">Vous n\u2019êtes pas dans la zone du poste. Vérifiez votre carte et votre azimut !</div>';
+  }
+}
+/* Règles communes aux deux modes de validation */
+async function commonValidate(post,method,pos){
+  if(!S.team.start) return {ok:false,msg:'Démarrez d\u2019abord le chrono depuis l\u2019écran de course.'};
+  const c=teamCourse();
+  const expected=c.steps[S.team.scans.length];
+  if(!expected) return {ok:false,msg:'Votre parcours est déjà terminé.'};
+  if(S.team.scans.some(s=>s.postId===post.id)) return {ok:false,msg:'Poste « '+esc(post.name)+' » déjà validé.'};
+  if(post.id!==expected.postId)
+    return {ok:false,msg:'« '+esc(post.name)+' » n\u2019est pas votre prochain poste. Suivez l\u2019ordre de votre parcours !'};
+  const scan={postId:post.id,t:Date.now(),method};
+  const p = pos || await getPos(5000); // l'horodatage est déjà figé : le GPS ne pénalise pas le temps
+  if(p){ scan.lat=p.lat; scan.lon=p.lon; scan.acc=p.acc; }
+  S.team.scans.push(scan);
+  if(S.team.scans.length===c.steps.length) S.team.end=Date.now();
+  await saveTeam();
+  return {ok:true};
+}
+
+/* ---- Démarrage ---- */
+(async ()=>{ lsLoadAll(); await loadConfig(); render(); })();
+</script>
+</body>
+</html>
